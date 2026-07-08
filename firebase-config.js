@@ -9,7 +9,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/fireba
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 export const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY_HERE",
+  apiKey: "AIzaSyCJkm_eA-BJtFzbxO1CyxwK8PbmgHmqq7U",
   authDomain: "mydesignproject-f22d5.firebaseapp.com",
   projectId: "mydesignproject-f22d5",
   storageBucket: "mydesignproject-f22d5.firebasestorage.app",
