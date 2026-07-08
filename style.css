@@ -120,6 +120,40 @@ body {
   cursor: pointer;
 }
 
+.week-block {
+  margin-bottom: 18px;
+}
+
+.week-heading {
+  font-weight: 600;
+  font-size: .9rem;
+  color: var(--accent-dark);
+  margin-bottom: 8px;
+}
+
+.week-fieldset {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+
+.week-fieldset legend {
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--accent-dark);
+  padding: 0 4px;
+}
+
+.slot-option.full {
+  color: #9a3b3b;
+  cursor: not-allowed;
+  opacity: .7;
+}
+.slot-option.full input {
+  cursor: not-allowed;
+}
+
 .field {
   display: block;
   margin-bottom: 20px;
@@ -138,35 +172,4 @@ input[type="text"], input[type="email"], textarea {
   padding: 10px 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  font-size: 1rem;
-  font-family: inherit;
-}
-
-fieldset {
-  border: none;
-  padding: 0;
-  margin: 0 0 20px;
-}
-
-.agreements .checkbox-line {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 10px;
-  font-weight: 400;
-}
-.agreements .checkbox-line input { margin-top: 4px; }
-
-.form-status {
-  margin-top: 14px;
-  font-size: .9rem;
-}
-.form-status.ok { color: var(--ok); }
-.form-status.err { color: var(--err); }
-
-.footer {
-  text-align: center;
-  color: #777;
-  padding: 32px 0 60px;
-  font-size: .9rem;
-}
+  font-s
