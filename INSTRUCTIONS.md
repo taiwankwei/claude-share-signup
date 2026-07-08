@@ -29,4 +29,7 @@
 3. 任何改動 Firestore 安全規則或 firebase-config.js 的內容,要先跟使用者確認,
    因為這會直接影響報名資料的存取權限。
 4. 完成程式碼修改後,提醒使用者:「這些改動只在專案資料夾,需要你自己在本機
-   git add / commit / push 才會反映到 Gi
+   git add / commit / push 才會反映到 GitHub Pages 上的網站」,不要假裝已經部署完成。
+5. 交付檔案一律用 present_files 分享,不要只在對話裡貼程式碼。
+6. 修改完檔案、要上傳 GitHub 之前,先用 bash 的 wc -c / tail -c 直接檢查檔案
+   實際位元組數與結尾內容,確認跟預期一致再上傳,避免檔案被靜默截斷。

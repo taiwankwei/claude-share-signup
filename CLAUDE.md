@@ -46,4 +46,28 @@ Firebase Firestore,不透過 Google 表單。
    負責提供規則內容文字。
 4. **這個網站部署在獨立的 GitHub repo**(不是 `taiwankwei/lifebread`)。
    `lifebread` repo 根目錄已經有另一個正在使用中的網站(九州旅遊 /
-   北投健行等內容,已有 GitHub Pages 部
+   北投健行等內容,已有 GitHub Pages 部署紀錄),絕對不要把這個專案的
+   `index.html` 等檔案推到 `lifebread` 的根目錄,會直接覆蓋掉別人正在用
+   的首頁。
+5. **重複 Edit/Write 同一個檔名可能導致「檔案實際內容跟工具顯示內容不同步」**
+   (在 2026-07-08 的除錯中實際發生過:index.html / style.css / app.js /
+   firebase-config.js / README.md / CLAUDE.md / INSTRUCTIONS.md / MEMORY.md
+   都曾經發生「Read 工具顯示的內容是新的,但 bash 指令或上傳到 GitHub 後
+   看到的卻是舊版、被截斷」的狀況)。**修改完重要檔案、且要交付/上傳前,
+   務必用 bash 的 `wc -c` / `tail -c` 直接檢查實際位元組數與結尾內容**,
+   不要只信任 Write/Edit 工具回傳「成功」。如果 bash 看到的內容跟預期不符,
+   解法是:把完整內容寫到一個新檔名,用 bash 確認新檔名內容正確,再用
+   `mv` 蓋掉原本的檔名,重新確認一次,才算真的修好。
+
+## 常見任務的做法
+
+- **使用者要求「更新可報名時段」**:
+  查詢 Google Calendar(平日 10:00-12:00 區間),找出實際有會議衝突的
+  日期,只更新 `app.js` 的 `SLOTS` 陣列中對應項目的 `status`
+  (`"open"` → `"full"`),不要重新產生整個陣列。更新後在 `MEMORY.md`
+  補一筆記錄(更新日期、哪些日期變動)。
+- **使用者要求「加開新的一批時段」**:在 `SLOTS` 陣列尾端加上新日期,
+  格式與現有項目一致,並同步更新 `MEMORY.md`。
+- **交付檔案**一律用 `present_files` 分享,不要只在對話裡貼程式碼。
+- **任何檔案改完要上傳 GitHub 前**,先照上面第 5 點用 bash 驗證過,
+  確定內容完整才上傳,避免重複發生半個檔案被截斷的問題。

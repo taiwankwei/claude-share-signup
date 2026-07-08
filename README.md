@@ -80,4 +80,38 @@ match /claude_share_registrations/{docId} {
 
 ## 第三步:本機測試
 
-因為使用 ES module(`type="module"`),不能直接用瀏覽器打開 
+因為使用 ES module(`type="module"`),不能直接用瀏覽器打開 `index.html`
+(file:// 會被瀏覽器擋下跨來源請求),需要用簡單的本機伺服器:
+
+```bash
+cd claude-share-signup
+python3 -m http.server 8000
+# 或用 npx serve .
+```
+
+打開 http://localhost:8000 測試表單送出,確認 Firestore 有收到資料。
+
+## 第四步:GitHub(已完成 ✅)
+
+已建立獨立的新 repo `taiwankwei/claude-share-signup`(**不是**
+`lifebread`,避免覆蓋掉 lifebread 根目錄那個正在使用中的九州旅遊/北投
+健行網站),檔案已推送,GitHub Pages 已啟用。
+
+網站網址:**https://taiwankwei.github.io/claude-share-signup/**
+
+之後如果要更新程式碼(例如調整 `SLOTS` 時段),可以直接在 GitHub 網頁上
+編輯檔案並 commit,或是在本機 clone 這個 repo 後用 git 操作:
+
+```bash
+git clone https://github.com/taiwankwei/claude-share-signup.git
+```
+
+---
+
+## 之後每週要做的事
+
+`app.js` 裡的 `SLOTS` 陣列列出了近 7 週平日 10:00-12:00 的時段
+(依 2026-07-08 的行事曆狀態產生,目前全部開放)。如果之後你的行事曆
+新增了衝突的會議,只要把對應那一筆的 `status: "open"` 改成
+`status: "full"`,存檔後重新推上 GitHub,該時段就會自動從清單與
+報名表單的勾選選項中移除(顯示為「不可報名」但保留讓人知道時段存在)。
