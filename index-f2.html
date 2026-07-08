@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Claude 學習經驗分享 ‧ 報名頁面</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <p class="eyebrow">平日晨間 ‧ 小班共學</p>
+    <h1>Claude 學習經驗分享</h1>
+    <p class="subtitle">
+      分享我實際使用 Claude 提升學習與工作效率的方法,帶著你一起動手練習、
+      解決真實題目。名額有限,誠徵有意願、願意投入練習的夥伴。
+    </p>
+    <a href="#signup" class="btn-primary">立即報名</a>
+  </div>
+</header>
+
+<main class="container">
+
+  <section id="schedule" class="card">
+    <h2>分享時段</h2>
+    <p>固定於每週<strong>一至週五,上午 10:00–12:00</strong>(台灣時間)進行,範圍是 7 月到 8 月的平常上班日。</p>
+    <p class="note">
+      實際是否有空以我的 Google 行事曆為準,若那天已經有其他行程就無法進行分享。
+      報名前請先點下方連結查看我的行事曆,確認想參加的日期是否方便,
+      再到下方報名表單填入你希望參加的日期。
+    </p>
+    <p>
+      <a href="https://calendar.google.com/calendar/u/0/r?pli=1" target="_blank" rel="noopener noreferrer" class="btn-secondary">開啟 Google 行事曆 ↗</a>
+    </p>
+  </section>
+
+  <section id="conditions" class="card">
+    <h2>報名條件</h2>
+    <p>本次共學小組著重實作與持續練習,報名前請確認符合以下四點:</p>
+    <ol class="conditions-list">
+      <li>具備明確的參與意願與學習動機,並在報名表中簡述你想學什麼、為什麼想學。</li>
+      <li>願意配合完成分享者指派的練習題目或實作任務,並在下次分享前完成。</li>
+      <li>願意自行負擔 Claude 付費訂閱方案,以確保練習時能使用完整功能。</li>
+      <li>可配合平日上午 10:00–12:00 的分享時段,並在報名時填寫你希望參加的日期。</li>
+    </ol>
+  </section>
+
+  <section id="signup" class="card">
+    <h2>報名表單</h2>
+    <form id="signup-form" novalidate>
+
+      <label class="field">
+        <span>姓名 <em>*</em></span>
+        <input type="text" name="name" required autocomplete="name" />
+      </label>
+
+      <label class="field">
+        <span>Email <em>*</em></span>
+        <input type="email" name="email" required autocomplete="email" />
+      </label>
+
+      <label class="field">
+        <span>參與動機 / 想學什麼 <em>*</em></span>
+        <textarea name="motivation" rows="4" required
+          placeholder="請簡述你的學習動機、目前遇到的問題、想透過這次共學達成什麼目標"></textarea>
+      </label>
+
+      <fieldset class="field">
+        <legend>希望參加的日期 <em>*</em></legend>
+        <p class="note">
+          請先點上方「分享時段」區塊的連結查看我的 Google 行事曆,確認平日
+          上午 10:00–12:00 是否方便,再填入你希望參加的日期。
+        </p>
+        <label class="field">
+          <span>日期 <em>*</em></span>
+          <input type="date" name="preferredDate" required />
+        </label>
+      </fieldset>
+
+      <fieldset class="field agreements">
+        <legend>報名前確認</legend>
+        <label class="checkbox-line">
+          <input type="checkbox" name="agree_motivation" required />
+          <span>我已在上方說明我的參與意願與學習動機</span>
+        </label>
+        <label class="checkbox-line">
+          <input type="checkbox" name="agree_tasks" required />
+          <span>我願意配合完成指派的練習題目或實作任務</span>
+        </label>
+        <label class="checkbox-line">
+          <input type="checkbox" name="agree_payment" required />
+          <span>我願意自行負擔 Claude 付費訂閱方案</span>
+        </label>
+        <label class="checkbox-line">
+          <input type="checkbox" name="agree_time" required />
+          <span>我可配合平日上午 10:00–12:00 的分享時段</span>
+        </label>
+      </fieldset>
+
+      <button type="submit" class="btn-primary" id="submit-btn">送出報名</button>
+      <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+</main>
+
+<footer class="container footer">
+  <p>有任何問題,歡迎來信:<a href="mailto:taiwan.kwei@gmail.com">taiwan.kwei@gmail.com</a></p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
