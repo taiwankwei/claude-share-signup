@@ -119,4 +119,95 @@ function renderSlotCheckboxes() {
           </label>`;
         }
         return `<label class="slot-option">
-          <input type="radio" 
+          <input type="radio" name="week_${group.week}" value="${s.date}" />
+          ${s.label}
+        </label>`;
+      })
+      .join("");
+    return `
+      <fieldset class="week-fieldset">
+        <legend>第 ${group.week} 週(${group.rangeLabel})— 最多選一天</legend>
+        <div class="slot-checkboxes">${options}</div>
+      </fieldset>`;
+  }).join("");
+}
+
+renderSlotList();
+renderSlotCheckboxes();
+
+// -----------------------------------------------------------------
+// 表單送出 -> 寫入 Firestore
+// -----------------------------------------------------------------
+const form = document.getElementById("signup-form");
+const statusEl = document.getElementById("form-status");
+const submitBtn = document.getElementById("submit-btn");
+
+function getChosenSlots(formData) {
+  return WEEK_GROUPS.map((group) => formData.get(`week_${group.week}`)).filter(
+    (v) => v
+  );
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  statusEl.textContent = "";
+  statusEl.className = "form-status";
+
+  const formData = new FormData(form);
+  const name = formData.get("name")?.toString().trim();
+  const email = formData.get("email")?.toString().trim();
+  const motivation = formData.get("motivation")?.toString().trim();
+  const chosenSlots = getChosenSlots(formData);
+
+  const agreements = [
+    "agree_motivation",
+    "agree_tasks",
+    "agree_payment",
+    "agree_time",
+  ];
+  const allAgreed = agreements.every((key) => formData.get(key) === "on");
+
+  if (!name || !email || !motivation) {
+    statusEl.textContent = "請完整填寫姓名、Email 與參與動機。";
+    statusEl.classList.add("err");
+    return;
+  }
+  if (chosenSlots.length === 0) {
+    statusEl.textContent = "請至少選一個希望參加的日期(每週最多選一天)。";
+    statusEl.classList.add("err");
+    return;
+  }
+  if (!allAgreed) {
+    statusEl.textContent = "請勾選全部四項報名前確認,才能送出報名。";
+    statusEl.classList.add("err");
+    return;
+  }
+
+  submitBtn.disabled = true;
+  statusEl.textContent = "送出中…";
+
+  try {
+    await addDoc(collection(db, "claude_share_registrations"), {
+      name,
+      email,
+      motivation,
+      preferredSlots: chosenSlots,
+      agreedMotivation: true,
+      agreedTasks: true,
+      agreedPayment: true,
+      agreedTime: true,
+      createdAt: serverTimestamp(),
+    });
+
+    form.reset();
+    renderSlotCheckboxes();
+    statusEl.textContent = "報名成功!我會透過 Email 與你確認時段,謝謝你的參與意願。";
+    statusEl.classList.add("ok");
+  } catch (err) {
+    console.error(err);
+    statusEl.textContent = "送出時發生錯誤,請稍後再試,或直接寫信給我。";
+    statusEl.classList.add("err");
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
