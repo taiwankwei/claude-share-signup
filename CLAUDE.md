@@ -71,3 +71,17 @@ Firebase Firestore,不透過 Google 表單。
 - **交付檔案**一律用 `present_files` 分享,不要只在對話裡貼程式碼。
 - **任何檔案改完要上傳 GitHub 前**,先照上面第 5 點用 bash 驗證過,
   確定內容完整才上傳,避免重複發生半個檔案被截斷的問題。
+
+
+---
+
+## 2026-07-08 更新:時段機制改版(取代上面「常見任務的做法」裡關於 SLOTS 的部分)
+
+`app.js` 已移除 `SLOTS` 陣列與 `renderSlotList`/`renderSlotCheckboxes` 這套邏輯,不再自動列出行事曆日期清單。現況:
+
+- `index.html` 的「分享時段」區塊改成放一個連結,導到分享者的 Google 行事曆(`https://calendar.google.com/calendar/u/0/r?pli=1`),使用者自行確認平日 10:00–12:00 是否有空。
+- 報名表單的日期欄位改成 `<input type="date" name="preferredDate">`,由使用者自行輸入,不再是每週一組 radio button。
+  - `app.js` 送出 Firestore 時仍使用 `preferredSlots` 這個 key(值為 `[preferredDate]` 單一元素陣列),刻意維持 key 名稱不變以相容既有 Firestore 規則(規則要求文件需包含 `preferredSlots`),避免使用者要重新修改、發布規則。
+   
+    - 之後若使用者要求「更新可報名時段」,不再是查 Google Calendar 改 `SLOTS` 的 `status`,而是視需求調整 `index.html` 的說明文字或 Google 行事曆連結本身即可。
+    - 
