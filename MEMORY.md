@@ -216,3 +216,37 @@
 - 原因(如果不明顯的話)
 - 還剩什麼待辦
 ```
+
+## 2026-07-08(續6)— 時段機制改成「行事曆連結 + 日期輸入」,並發現 GitHub 檔案上傳有另一種同名覆蓋失效模式
+
+功能異動
+
+分享時段不再自動列出行事曆日期清單(拿掉 SLOTS/RAW_DATES/WEEK_GROUPS/renderSlotList/renderSlotCheckboxes 這整套邏輯)。
+index.html 的「分享時段」區塊改成放一個連結,導到分享者的 Google 行事曆(使用者提供的網址:https://calendar.google.com/calendar/u/0/r?pli=1),讓使用者自己確認平日 10:00–12:00 是否有空。這個連結是使用者登入後才看得到的個人行事曆首頁,不是公開分享連結,使用者確認過這樣放置是刻意的,之後若要改用真正公開可分享的行事曆連結可再調整。
+報名表單的日期欄位改成單一個 <input type="date" name="preferredDate">,不再是每週一組 radio button。
+app.js 送出 Firestore 時仍使用 preferredSlots 這個 key(值為 [preferredDate] 單一元素陣列),刻意維持 key 名稱不變,是為了相容既有 Firestore 規則(規則要求文件必須包含 preferredSlots),不需要使用者重新修改、發布規則。
+
+順便補上 firebase-config.js 的真實 apiKey
+
+使用者問「apiKey 要去哪裡拿」,直接用瀏覽器開 Firebase 主控台(專案設定 → 一般 → 你的應用程式 →「北投走走」→ SDK 設定和配置)讀出真實 apiKey,已寫入本機 firebase-config.js(outputs 與工作資料夾兩份都已更新)。實際金鑰數值不記錄在這份檔案裡,需要時直接回 Firebase 主控台複製。
+把這把 key 推上公開 GitHub repo 這個動作被系統的分類器擋下(理由:這個 repo 先前已經因為同一把金鑰被截斷後意外外洩、觸發過 GitHub Secret Scanning,系統判定重複同一模式需要使用者本人決定),所以最終還是由使用者自己到 GitHub 網頁或本機 commit 這一步,Claude 沒有把新 apiKey 推上 GitHub。
+順便查證了 Firebase Web API key 的資安模型:這把 key 設計上就是公開的(嵌入前端程式碼、每個訪客瀏覽器都會拿到),真正的存取控制是 Firestore 安全規則,不是靠這把 key 保密。GitHub Secret Scanning 對它的標記是已知的 false positive(比對官方文件與社群討論確認)。真正不能外洩的是 Firebase Admin SDK 的服務帳戶金鑰,這份專案裡沒有這種東西。
+
+重大問題(新發現):同檔名覆蓋上傳,GitHub diff 只顯示極小差異(非本次截斷 bug,是另一種失效模式)
+
+用 file_upload 直接上傳同檔名(index.html/app.js/style.css)覆蓋既有檔案、點下第一次「Commit changes」按鈕後,GitHub 的 commit diff 顯示只改了檔案最後幾行(例如 index.html 只顯示 +7/-1),代表實際送出的內容跟舊版幾乎一樣 —— 但本機用 bash wc -c/tail -c/grep 檢查當下的來源檔案內容明明是完整的新版本。
+懷疑原因:Claude in Chrome 的 file_upload 工具在「同一個檔名」被重複上傳時,可能讀到瀏覽器端某種基於檔名的快取,沒有真正重新讀取磁碟上的最新內容;也可能是第一次點擊「Commit changes」按鈕時 ref 已經過期(檔案上傳後 DOM 重新渲染),點擊沒有真正送出,需要重新 find 一次按鈕、用截圖確認按鈕位置後再點擊才會生效。
+有效解法(比先前的「同檔名 mv 覆蓋」更進一步):
+
+把新內容寫到完全沒用過的新檔名(例如 index-f2.html),上傳到 GitHub,用 blob 頁面的「N lines · X KB」跟本機 wc -l/wc -c 比對,確認完全一致。
+到 GitHub 網頁把舊檔名(index.html/app.js/style.css)個別刪除(/delete/main/<file>,注意這裡「Commit changes...」是彈出視窗,要點兩次:先點開彈窗,再點彈窗裡的「Commit changes」才會真的送出)。
+到新檔名的 /edit/main/<file> 頁面,把上方檔名欄位整個選取(觸發彈窗前務必截圖確認選取範圍與游標真的在檔名欄位,不是編輯器內容區,以免誤觸 Ctrl+A 選到整份程式碼再打字覆蓋掉),改成正確檔名,一樣兩次點擊「Commit changes」確認,即可完成「重新命名」蓋掉原本的檔名。
+
+在 GitHub 網頁編輯器(CodeMirror)裡直接打字新增內容時,如果打的是 Markdown 的有序清單(1. 2. 3.)或無序清單(- ),編輯器會在每次換行時自動幫下一行加上編號/符號,如果打字內容本身也自帶編號/符號,會變成重複(例如「2. 2. ...」「- - ...」)。之後要在既有檔案尾端直接打字附加清單內容時,打完要切到 Preview 分頁肉眼確認一次,有重複要手動刪掉多餘的「數字. 」或「- 」。
+
+現況
+
+網站功能(行事曆連結 + 單一日期輸入 + preferredSlots 相容既有規則):已完成、已推上 GitHub(用上面新檔名法修好並確認 index.html 114 行 4.48KB、app.js 87 行 2.98KB、style.css 153 行 2.74KB,跟本機一致)、已用瀏覽器實測畫面渲染正確(無 slot-list、無 signup-slot-checkboxes、有 calendar.google.com 連結、有 preferredDate 輸入框)。
+firebase-config.js:apiKey 已在本機補上真實值,但尚未推上 GitHub(被系統擋下,需使用者自己操作)。
+README.md / CLAUDE.md 已同步更新,補充說明新的時段機制(取代舊的 SLOTS 相關段落,舊段落保留但加註「已取代」,沒有整段刪除,避免又觸發同檔名覆蓋的風險)。
+GitHub Secret Scanning 那個 open 的 alert 仍待使用者決定要不要處理(選項不變:HTTP 參照網址限制,或重新產生新 key)。
