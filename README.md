@@ -115,3 +115,17 @@ git clone https://github.com/taiwankwei/claude-share-signup.git
 新增了衝突的會議,只要把對應那一筆的 `status: "open"` 改成
 `status: "full"`,存檔後重新推上 GitHub,該時段就會自動從清單與
 報名表單的勾選選項中移除(顯示為「不可報名」但保留讓人知道時段存在)。
+
+
+---
+
+## 2026-07-08 更新:時段清單改版(此節取代上面「之後每週要做的事」)
+
+`app.js` 不再自動列出行事曆日期清單,`SLOTS`/`status: "open"/"full"` 這套機制已移除。改為:
+
+1. 「分享時段」區塊放一個連結,導到分享者的 Google 行事曆(`https://calendar.google.com/calendar/u/0/r?pli=1`),讓使用者自己確認平日 10:00–12:00 是否有空。
+2. 報名表單的「希望參加的日期」改成一個 `<input type="date">`,由使用者自行輸入。
+   3. 送出 Firestore 的欄位仍叫 `preferredSlots`(值為 `[使用者輸入的日期]` 陣列),刻意維持這個 key 名稱不變,是為了相容既有的 Firestore 安全規則(規則要求文件必須包含 `preferredSlots` 這個 key),不需要使用者重新修改、發布規則。
+     
+      4. 之後若要調整平日時段規則,直接改 `index.html` 的說明文字與 `app.js` 的驗證邏輯即可,不再需要維護日期陣列。
+      5. 
