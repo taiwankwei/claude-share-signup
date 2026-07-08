@@ -172,4 +172,35 @@ input[type="text"], input[type="email"], textarea {
   padding: 10px 12px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  font-s
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 20px;
+}
+
+.agreements .checkbox-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-weight: 400;
+}
+.agreements .checkbox-line input { margin-top: 4px; }
+
+.form-status {
+  margin-top: 14px;
+  font-size: .9rem;
+}
+.form-status.ok { color: var(--ok); }
+.form-status.err { color: var(--err); }
+
+.footer {
+  text-align: center;
+  color: #777;
+  padding: 32px 0 60px;
+  font-size: .9rem;
+}
